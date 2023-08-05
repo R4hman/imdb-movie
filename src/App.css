@@ -1,0 +1,237 @@
+:root {
+  --header-color: #6741d9;
+  --header-light-color: #7950f2;
+  --color-black: #212529;
+  --color-light-black: #2b3035;
+  --color-light-2-black: #343a40;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  height: 100vh;
+  background-color: var(--color-black);
+  overflow: hidden;
+}
+
+.header {
+  background-color: var(--header-color);
+  padding: 2rem;
+  max-width: 140rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2.5rem;
+  border-radius: 5px;
+}
+
+.logo {
+  font-size: 30px;
+}
+
+.search-input {
+  padding: 1.5rem;
+  border: none;
+  outline: none;
+  width: 30rem;
+  background-color: var(--header-light-color);
+  opacity: 0.8;
+  border-radius: 10px;
+  color: white;
+}
+
+.found-result {
+  color: white;
+  font-size: 25px;
+}
+
+.movies-lists {
+  background-color: var(--color-light-black);
+  border-radius: 5px;
+  width: 40rem;
+  height: 55rem;
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  overflow: auto;
+}
+
+/* .movies-lists::-webkit-scrollbar {
+  display: none;
+} */
+
+.movies-lists ul {
+  margin-top: 5rem;
+}
+
+.main {
+  display: flex;
+
+  justify-content: center;
+  margin-top: 2.5rem;
+  gap: 2rem;
+}
+
+.toggle-btn {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+  background-color: var(--color-light-black);
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+}
+
+.movies-list {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  list-style: none;
+  cursor: pointer;
+  overflow: auto;
+}
+
+.movies-list:first-of-type {
+  justify-content: flex-end !important;
+}
+
+.movies-list:hover {
+  opacity: 0.7;
+}
+
+.movie-img {
+  width: 10rem;
+  height: 12rem;
+}
+
+.movie-info {
+  flex: 1;
+  color: white;
+}
+
+.movie-title {
+  font-size: 20px;
+}
+
+.movie-info p {
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.watched-movies {
+  background-color: var(--color-light-2-black);
+  border: 10px;
+  padding: 0.5rem 3rem;
+}
+
+.watched-movies h2 {
+  font-size: 22px;
+  color: white;
+}
+
+.watched-movies p {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.movie-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-details-top {
+  display: flex;
+  gap: 2rem;
+  background-color: var(--color-light-2-black);
+  color: white;
+}
+
+.movie-details-top p {
+  font-size: 14px;
+}
+.movie-details-top h2 {
+  font-size: 25px;
+}
+
+.movie-detail-img {
+  width: 12rem;
+  height: 17rem;
+}
+
+.movie-detail-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.movie-details-middle {
+  background-color: var(--color-light-2-black);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.add-to-list {
+  background-color: var(--header-color);
+  padding: 1rem 3rem;
+  color: white;
+  border: none;
+  outline: none;
+  border-radius: 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.movie-details-bottom {
+  padding: 4rem;
+  color: white;
+  font-size: 15px;
+}
+.movie-details-bottom p:first-child {
+  font-style: italic;
+  text-align: justify;
+}
+
+.back-btn {
+  background-color: white;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 1.7rem;
+  top: 1.2rem;
+  border-radius: 50%;
+  /* padding: 1rem; */
+  font-size: 18px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0.3rem;
+}
+
+.back-btn:hover {
+  transform: scale(1.05);
+}
+
+.remove-btn {
+  border: none;
+  outline: none;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+}
