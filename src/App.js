@@ -1,7 +1,8 @@
 import "./App.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StarRating from "./components/StarRating";
+import { key, useMovies } from "./useMovies";
 
 const tempMovieData = [
   {
@@ -50,25 +51,22 @@ const tempWatchedData = [
   },
 ];
 
-const key = "bc011bc2";
-
 export default function App() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(function () {
+    return JSON.parse(localStorage.getItem("watched"));
+  });
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
   // console.log("movies", movies);
 
-  const handleQuery = (val) => {
-    if (val.length < 3) {
-      setMovies([]);
-      return;
-    }
-    setQuery(val);
-  };
+  // const handleQuery = (val) => {
+  //   if (val.length < 3) {
+  //     setMovies([]);
+  //     return;
+  //   }
+  //   setQuery(val);
+  // };
 
   const handleSelectMovie = (id) => {
     setSelectedId((curr) => (curr === id ? null : id));
@@ -88,61 +86,67 @@ export default function App() {
   };
 
   useEffect(() => {
-    // const controller = new AbortController();
-    async function getMovie() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        if (!query) {
-          setMovies(tempMovieData);
-          return;
-        }
-        const data = await fetch(
-          `http://www.omdbapi.com/?apikey=${key}&s=${query}`
-          // { signal: controller.signal }
-        );
-        if (!data.ok)
-          throw new Error("Something went wrong with fetching movies");
-        const res = await data.json();
-        // console.log("res", res);
-        // console.log("response", res.Response);
-        if (res.Response === "False") {
-          console.log("yes it is");
-          throw new Error("Movie not found");
-        }
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
 
-        setMovies(res.Search);
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          setError(error.message);
-        }
-        console.log("error", error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  const { movies, isLoading, error } = useMovies(query);
 
-    handleCloseMovie();
+  // useEffect(() => {
+  //   // const controller = new AbortController();
+  //   async function getMovie() {
+  //     try {
+  //       setIsLoading(true);
+  //       setError(null);
+  //       if (!query) {
+  //         setMovies(tempMovieData);
+  //         return;
+  //       }
+  //       const data = await fetch(
+  //         `http://www.omdbapi.com/?apikey=${key}&s=${query}`
+  //         // { signal: controller.signal }
+  //       );
+  //       if (!data.ok)
+  //         throw new Error("Something went wrong with fetching movies");
+  //       const res = await data.json();
+  //       // console.log("res", res);
+  //       // console.log("response", res.Response);
+  //       if (res.Response === "False") {
+  //         console.log("yes it is");
+  //         throw new Error("Movie not found");
+  //       }
 
-    // coxlu fetch getmeyin qarsini almaq ucun 1 saniye gec cagirmaq
-    const setTimer = setTimeout(() => {
-      getMovie();
-    }, 1000);
+  //       setMovies(res.Search);
+  //     } catch (error) {
+  //       if (error.name !== "AbortError") {
+  //         setError(error.message);
+  //       }
+  //       console.log("error", error.message);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
 
-    //abort ilede etmek mumkundur
-    // return function () {
-    //   controller.abort();
-    // };
+  //   handleCloseMovie();
 
-    // her fetchden once evvelkini silmek
-    return function () {
-      clearTimeout(setTimer);
-    };
-  }, [query]);
+  //   // coxlu fetch getmeyin qarsini almaq ucun 1 saniye gec cagirmaq
+  //   const setTimer = setTimeout(() => {
+  //     getMovie();
+  //   }, 1000);
+
+  //   //abort ilede etmek mumkundur
+  //   // return function () {
+  //   //   controller.abort();
+  //   // };
+
+  //   // her fetchden once evvelkini silmek
+  //   return function () {
+  //     clearTimeout(setTimer);
+  //   };
+  // }, [query]);
 
   return (
     <div>
-      <Header handleQuery={handleQuery} />
+      <Header setQuery={setQuery} query={query} />
       <Main
         handleCloseMovie={handleCloseMovie}
         movies={movies}
@@ -158,11 +162,15 @@ export default function App() {
   );
 }
 
-function Header({ handleQuery }) {
+function Header({ handleQuery, setQuery, query }) {
   return (
     <div className="header">
       <Logo />
-      <SearchInput handleQuery={handleQuery} />
+      <SearchInput
+        // handleQuery={handleQuery}
+        setQuery={setQuery}
+        query={query}
+      />
       <FoundResults />
     </div>
   );
@@ -172,11 +180,33 @@ function Logo() {
   return <div className="logo">🍿usePopcorn</div>;
 }
 
-function SearchInput({ handleQuery }) {
+function SearchInput({ handleQuery, setQuery, query }) {
+  // useEffect(() => {
+  //   const el = document.querySelector(".search-input");
+  //   el.focus();
+  // }, []);
+  const inputEl = useRef(null);
+
+  useEffect(() => {
+    function callback(e) {
+      if (document.activeElement === inputEl.current) return;
+      if (e.code === "Enter") {
+        inputEl.current.focus();
+        setQuery(" ");
+      }
+    }
+
+    document.addEventListener("keydown", callback);
+    return () => document.removeEventListener("keydown", callback);
+  }, [setQuery]);
+
   return (
     <input
-      onChange={(e) => handleQuery(e.target.value)}
+      value={query}
+      ref={inputEl}
       className="search-input"
+      onChange={(e) => setQuery(e.target.value)}
+      // onChange={(e) => handleQuery(e.target.value)}
       type="text"
     />
   );
@@ -332,7 +362,6 @@ function WatchedMovieContainer({ watched, handleRemoveMovie }) {
   return (
     <div style={{ padding: "2rem" }}>
       {watched.map((m) => {
-        console.log(m);
         return (
           <li className="movies-list" key={m.imdbID}>
             <img className="movie-img" src={m.Poster} alt={m.Title} />
@@ -429,7 +458,6 @@ function SingleMovieDetails({
     const callback = function (e) {
       if (e.code === "Escape") {
         handleCloseMovie();
-        console.log("closing");
       }
     };
 

@@ -8,7 +8,6 @@ export default function StarRating({
   const [starRating, setStarRating] = useState(0);
   const [hoverRate, setHoverRate] = useState(false);
   const starArr = Array.from({ length: maxRating }, (x) => x + 1);
-  console.log(starRating);
 
   const handleRating = (rat) => {
     setStarRating(rat);
